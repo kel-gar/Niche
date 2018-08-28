@@ -20,7 +20,7 @@ describe("routes : static", () => {
 
     it("should return word 'polo'", (done) => {
 
-      request.get(base + "/marco", (err, res, body) => {
+      request.get(base + "marco", (err, res, body) => {
         expect(body).toContain('polo');
 
         done();
