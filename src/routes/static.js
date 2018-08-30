@@ -3,10 +3,6 @@ const router = express.Router();
 const staticController = require("../controllers/staticController");
 
 router.get("/", staticController.index);
-
-// router.get("/marco", (req, res, next) => {
-//   res.send("polo");
-//   next()
-// });
+router.get("/about", staticController.about);
 
 module.exports = router;
