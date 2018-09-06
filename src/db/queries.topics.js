@@ -1,4 +1,5 @@
 const Topic = require("./models").Topic;
+const Post = require("./models").Post;
 
 module.exports = {
 
@@ -13,7 +14,12 @@ module.exports = {
   },
 
   getTopic(id, callback){
-    return Topic.findById(id)
+    return Topic.findById(id, {
+      include: [{
+        model: Post,
+        as: "posts"
+      }]
+    })
     .then((topic) => {
       callback(null, topic);
     })
@@ -65,6 +71,16 @@ module.exports = {
         callback(err);
       });
     });
-  }
+  },
+
+  edit(req, res, next){
+    postQueries.getPost(req.params.id, (err, post) => {
+      if(err || post == null){
+        res.redirect(404, "/");
+      } else {
+        res.render("posts/edit", {post});
+      }
+    });
+  }  
 
 }
