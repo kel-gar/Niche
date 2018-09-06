@@ -1,12 +1,12 @@
 const sequelize = require("../../src/db/models/index").sequelize;
 const Topic = require("../../src/db/models").Topic;
-const Post = require("../../src/db/models").Post;
+const Flair = require("../../src/db/models").Flair;
 
-describe("Post", () => {
+describe("Flair", () => {
 
   beforeEach((done) => {
     this.topic;
-    this.post;
+    this.flair;
     sequelize.sync({force: true}).then((res) => {
 
       Topic.create({
@@ -15,13 +15,13 @@ describe("Post", () => {
       })
       .then((topic) => {
         this.topic = topic;
-        Post.create({
-          title: "My first visit to Proxima Centauri b",
-          body: "I saw some rocks.",
+        Flair.create({
+          name: "Popular Post",
+          color: "Green",
           topicId: this.topic.id
         })
-        .then((post) => {
-          this.post = post;
+        .then((flair) => {
+          this.flair = flair;
           done();
         });
       })
@@ -35,17 +35,16 @@ describe("Post", () => {
 
   describe("#create()", () => {
 
-      it("should create a post object with a title, body, and assigned topic", (done) => {
-        Post.create({
-          title: "Pros of Cryosleep during the long journey",
-          body: "1. Not having to answer the 'are we there yet?' question.",
+      it("should create a flair object with a name, color, and assigned topic", (done) => {
+        Flair.create({
+          name: "Important Topic",
+          color: "Red",
           topicId: this.topic.id
         })
-        .then((post) => {
-          expect(post.title).toBe("Pros of Cryosleep during the long journey");
-          expect(post.body).toBe("1. Not having to answer the 'are we there yet?' question.");
+        .then((flair) => {
+          expect(flair.name).toBe("Important Topic");
+          expect(flair.color).toBe("Red");
           done();
-
         })
         .catch((err) => {
           console.log(err);
@@ -53,17 +52,16 @@ describe("Post", () => {
         });
       });
 
-      it("should not create a post with missing title, body, or assigned topic", (done) => {
-        Post.create({
-          title: "Pros of Cryosleep during the long journey"
+      it("should not create a flair object with missing name, color, or assigned topic", (done) => {
+        Flair.create({
+          name: "Important Topic"
         })
         .then((post) => {
           done();
-
         })
         .catch((err) => {
-          expect(err.message).toContain("Post.body cannot be null");
-          expect(err.message).toContain("Post.topicId cannot be null");
+          expect(err.message).toContain("Flair.color cannot be null");
+          expect(err.message).toContain("Flair.topicId cannot be null");
           done();
         })
       });
@@ -72,19 +70,19 @@ describe("Post", () => {
 
     describe("#setTopic()", () => {
 
-      it("should associate a topic and a post together", (done) => {
+      it("should associate a topic and a flair together", (done) => {
+
         Topic.create({
           title: "Challenges of interstellar travel",
           description: "1. The Wi-Fi is terrible"
         })
         .then((newTopic) => {
-          expect(this.post.topicId).toBe(this.topic.id);
-          this.post.setTopic(newTopic)
+          expect(this.flair.topicId).toBe(this.topic.id);
+          this.flair.setTopic(newTopic)
+          .then((flair) => {
 
-        .then((post) => {
-          expect(post.topicId).toBe(newTopic.id);
-          done();
-
+            expect(flair.topicId).toBe(newTopic.id);
+            done();
           });
         })
       });
@@ -94,8 +92,8 @@ describe("Post", () => {
     describe("#getTopic()", () => {
 
       it("should return the associated topic", (done) => {
-        
-        this.post.getTopic()
+
+        this.flair.getTopic()
         .then((associatedTopic) => {
           expect(associatedTopic.title).toBe("Expeditions to Alpha Centauri");
           done();
