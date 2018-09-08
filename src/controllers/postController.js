@@ -8,7 +8,8 @@ module.exports = {
     let newPost= {
       title: req.body.title,
       body: req.body.body,
-      topicId: req.params.topicId
+      topicId: req.params.topicId,
+      userId: req.user.id
     };
     postQueries.addPost(newPost, (err, post) => {
       if(err){
@@ -57,7 +58,7 @@ module.exports = {
         res.redirect(`/topics/${req.params.topicId}/posts/${req.params.id}`);
       }
     });
-  }  
+  }
 
 
 }
