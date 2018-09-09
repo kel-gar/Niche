@@ -49,7 +49,7 @@ module.exports = {
     req.logout();
     req.flash("notice", "You've successfully signed out!");
     res.redirect("/");
-  }  
+  }
 
 
 
