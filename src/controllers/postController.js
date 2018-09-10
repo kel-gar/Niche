@@ -39,7 +39,9 @@ module.exports = {
        if(err || post == null){
          res.redirect(404, "/");
        } else {
+
          const authorized = new Authorizer(req.user, post).edit();
+
          if(authorized) {
            res.render("posts/edit", {post});
          } else {

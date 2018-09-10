@@ -46,8 +46,7 @@ describe("routes : posts", () => {
    });
 
    describe("admin user performing CRUD actions for POST", () => {
-// #2: // before each test in admin user context, send an authentication request
-       // to a route we will create to mock an authentication request
+
      beforeEach((done) => {
        User.create({
          email: "admin@example.com",
@@ -73,7 +72,7 @@ describe("routes : posts", () => {
 describe("GET /topics/:topicId/posts/new", () => {
 
   it("should render a new post form", (done) => {
-    request.get(`${base}/${topic.id}/posts/new`, (err, res, body) => {
+    request.get(`${base}/${this.topic.id}/posts/new`, (err, res, body) => {
       expect(err).toBeNull();
       expect(body).toContain("New Post");
       done();
@@ -148,27 +147,6 @@ describe("GET /topics/:topicId/posts/:id", () => {
 
 });
 
-describe("POST /topics/:topicId/posts/:id/destroy", () => {
-
-  it("should delete the post with the associated ID", (done) => {
-
-//#1
-    expect(post.id).toBe(1);
-
-    request.post(`${base}/${this.topic.id}/posts/${this.post.id}/destroy`, (err, res, body) => {
-
-//#2
-      Post.findById(1)
-      .then((post) => {
-        expect(err).toBeNull();
-        expect(post).toBeNull();
-        done();
-      })
-    });
-  });
-
-});
-
 describe("GET /topics/:topicId/posts/:id/edit", () => {
 
   it("should render a view with an edit post form", (done) => {
@@ -186,7 +164,7 @@ describe("POST /topics/:topicId/posts/:id/update", () => {
 
   it("should return a status code 302", (done) => {
     request.post({
-      url: `${base}/${topic.id}/posts/${post.id}/update`,
+      url: `${base}/${this.topic.id}/posts/${this.post.id}/update`,
       form: {
         title: "Snowman Building Competition",
         body: "I love watching them melt slowly."
@@ -201,7 +179,8 @@ describe("POST /topics/:topicId/posts/:id/update", () => {
       const options = {
         url: `${base}/${this.topic.id}/posts/${this.post.id}/update`,
         form: {
-          title: "Snowman Building Competition"
+          title: "Snowman Building Competition",
+          body: 'I love watching them melt slowly.'
         }
       };
       request.post(options,
@@ -221,8 +200,28 @@ describe("POST /topics/:topicId/posts/:id/update", () => {
 
   });
 
-});
+  describe("POST /topics/:topicId/posts/:id/destroy", () => {
 
+    it("should delete the post with the associated ID", (done) => {
+
+      expect(this.post.id).toBe(1);
+
+      request.post(`${base}/${this.topic.id}/posts/${this.post.id}/destroy`, (err, res, body) => {
+        Post.findById(1)
+        .then((post) => {
+          expect(err).toBeNull();
+          expect(post).toBeNull();
+          done();
+        })
+      });
+    });
+
+  });
+
+});
+// END ADMIN USER
+
+// MEMBER USER
 describe("member user performing CRUD actions for POST", () => {
 
   beforeEach((done) => {
@@ -242,7 +241,7 @@ describe("member user performing CRUD actions for POST", () => {
   describe("GET /topics/:topicId/posts/new", () => {
 
     it("should render a new post form", (done) => {
-      request.get(`${base}/${topic.id}/posts/new`, (err, res, body) => {
+      request.get(`${base}/${this.topic.id}/posts/new`, (err, res, body) => {
         expect(err).toBeNull();
         expect(body).toContain("New Post");
         done();
@@ -317,77 +316,53 @@ describe("member user performing CRUD actions for POST", () => {
 
   });
 
-  describe("POST /topics/:topicId/posts/:id/destroy", () => {
-
-    it("should delete the post with the associated ID", (done) => {
-
-  //#1
-      expect(post.id).toBe(1);
-
-      request.post(`${base}/${this.topic.id}/posts/${this.post.id}/destroy`, (err, res, body) => {
-
-  //#2
-        Post.findById(1)
-        .then((post) => {
-          expect(err).toBeNull();
-          expect(post).toBeNull();
-          done();
-        })
-      });
-    });
-
+// // PRETTY SURE A MEMBER SHOULD NOT BE ABLE TO EDIT,UPDATE OR DESTROY
+//   describe("POST /topics/:topicId/posts/:id/destroy", () => {
+//
+//     it("should delete the post with the associated ID", (done) => {
+//
+//       expect(this.post.id).toBe(1);
+//
+//       request.post(`${base}/${this.topic.id}/posts/${this.post.id}/destroy`, (err, res, body) => {
+//         Post.findById(1)
+//         .then((post) => {
+//           expect(err).toBeNull();
+//           expect(post).toBeNull();
+//           done();
+//         })
+//       });
+//     });
+//
+//   });
+//
+//   describe("GET /topics/:topicId/posts/:id/edit", () => {
+//
+//     it("should render a view with an edit post form", (done) => {
+//       request.get(`${base}/${this.topic.id}/posts/${this.post.id}/edit`, (err, res, body) => {
+//         expect(err).toBeNull();
+//         expect(body).toContain("Edit Post");
+//         expect(body).toContain("Snowball Fighting");
+//         done();
+//       });
+//     });
+//
+//   });
+//
+//   describe("POST /topics/:topicId/posts/:id/update", () => {
+//
+//     it("should return a status code 302", (done) => {
+//       request.post({
+//         url: `${base}/${this.topic.id}/posts/${this.post.id}/update`,
+//         form: {
+//           title: "Snowman Building Competition",
+//           body: "I love watching them melt slowly."
+//         }
+//       }, (err, res, body) => {
+//         expect(res.statusCode).toBe(302);
+//         done();
+//         });
+//       });
+//     });
   });
 
-  describe("GET /topics/:topicId/posts/:id/edit", () => {
-
-    it("should render a view with an edit post form", (done) => {
-      request.get(`${base}/${this.topic.id}/posts/${this.post.id}/edit`, (err, res, body) => {
-        expect(err).toBeNull();
-        expect(body).toContain("Edit Post");
-        expect(body).toContain("Snowball Fighting");
-        done();
-      });
-    });
-
-  });
-
-  describe("POST /topics/:topicId/posts/:id/update", () => {
-
-    it("should return a status code 302", (done) => {
-      request.post({
-        url: `${base}/${topic.id}/posts/${post.id}/update`,
-        form: {
-          title: "Snowman Building Competition",
-          body: "I love watching them melt slowly."
-        }
-      }, (err, res, body) => {
-        expect(res.statusCode).toBe(302);
-        done();
-      });
-    });
-
-    it("should update the post with the given values", (done) => {
-        const options = {
-          url: `${base}/${this.topic.id}/posts/${this.post.id}/update`,
-          form: {
-            title: "Snowman Building Competition"
-          }
-        };
-        request.post(options,
-          (err, res, body) => {
-
-          expect(err).toBeNull();
-
-          Post.findOne({
-            where: {id: this.post.id}
-          })
-          .then((post) => {
-            expect(post.title).toBe("Snowman Building Competition");
-            done();
-          });
-        });
-      });
-
-    });
-
-  });
+});
