@@ -12,26 +12,6 @@ module.exports = {
         type: Sequelize.STRING,
         allowNull: false
       },
-      postId: {
-        type: Sequelize.INTEGER,
-        onDelete: "CASCADE",
-        allowNull: false,
-        references: {
-          model: "Posts",
-          key: "id",
-          as: "postId"
-        }
-      },
-      userId: {
-        type: Sequelize.INTEGER,
-        onDelete: "CASCADE",
-        allowNull: false,
-        references: {
-          model: "Users",
-          key: "id",
-          as: "userId"
-        }
-      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE
@@ -39,7 +19,27 @@ module.exports = {
       updatedAt: {
         allowNull: false,
         type: Sequelize.DATE
-      }
+      },
+      postId: {
+        type: Sequelize.INTEGER,
+        onDelete: "CASCADE",
+        allowNull: false,
+        references: {
+         model: "Posts",
+         key: "id",
+         as: "postId"
+        }
+      },
+      userId: {
+        type: Sequelize.INTEGER,
+        onDelete: "CASCADE",
+        allowNull: false,
+        references: {
+         model: "Users",
+         key: "id",
+         as: "userId"
+        }
+      },
     });
   },
   down: (queryInterface, Sequelize) => {
