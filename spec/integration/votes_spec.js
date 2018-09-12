@@ -57,7 +57,7 @@ describe("routes : votes", () => {
   // test suites go here
   describe("guest attempting to vote on a post", () => {
 
-    beforeEach((done) => {    // before each suite in this context
+    beforeEach((done) => {
       request.get({
         url: "http://localhost:3000/auth/fake",
         form: {
@@ -144,6 +144,34 @@ describe("routes : votes", () => {
           }
         );
       });
+
+      it("should not create a vote with a value other than 1", (done) => {
+        const options = {
+          url: `${base}${this.topic.id}/posts/${this.post.id}/votes/upvote`
+        };
+        request.get(options,
+          (err, res, body) => {
+            Vote.findOne({
+              where: {
+                userId: this.user.id,
+                postId: this.post.id,
+                value: 2
+              }
+            })
+            .then((vote) => {
+              expect(vote).toBeNull();
+              expect(vote.userId).toBe(this.user.id);
+              expect(vote.postId).toBe(this.post.id);
+              done();
+            })
+            .catch((err) => {
+              console.log(err);
+              done();
+            });
+          }
+        );
+      });
+      
     });
 
     describe("GET /topics/:topicId/posts/:postId/votes/downvote", () => {
@@ -174,10 +202,36 @@ describe("routes : votes", () => {
           }
         );
       });
+
+      it("should not create a vote with a value other than -1", (done) => {
+        const options = {
+          url: `${base}${this.topic.id}/posts/${this.post.id}/votes/upvote`
+        };
+        request.get(options,
+          (err, res, body) => {
+            Vote.findOne({
+              where: {
+                userId: this.user.id,
+                postId: this.post.id,
+                value: -2
+              }
+            })
+            .then((vote) => {               // confirm that an upvote was not created
+              expect(vote).toBeNull();
+              expect(vote.userId).toBe(this.user.id);
+              expect(vote.postId).toBe(this.post.id);
+              done();
+            })
+            .catch((err) => {
+              console.log(err);
+              done();
+            });
+          }
+        );
+      });
     });
 
   }); //end context for signed in user
-
 
 
 });

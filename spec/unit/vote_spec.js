@@ -64,7 +64,7 @@ describe("Vote", () => {
     });
   });
 
-  //suits will begin here
+  //suites will begin here
   describe("#create()", () => {
 
 // #2
