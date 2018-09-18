@@ -97,8 +97,8 @@ describe("routes : favorites", () => {
                console.log(err);
                done();
              });
-           };
-         )
+           });
+
        });
      });
 
@@ -179,7 +179,6 @@ describe("routes : favorites", () => {
      });
    });
 
-
-
+});
 
 });

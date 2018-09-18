@@ -62,7 +62,7 @@ describe("routes : users", () => {
             console.log(err);
             done();
           });
-        // }
+        }
       );
     });
 
