@@ -1,4 +1,3 @@
-// #1
 const Comment = require("./models").Comment;
 const Post = require("./models").Post;
 const User = require("./models").User;
@@ -7,7 +6,6 @@ const Authorizer = require("../policies/favorite");
 
 module.exports = {
 
-// #2
  createFavorite(req, callback){
    return Favorite.create({
      postId: req.params.postId,
@@ -21,7 +19,6 @@ module.exports = {
    });
  },
 
-// #3
  deleteFavorite(req, callback){
    const id = req.params.id;
 
@@ -32,7 +29,6 @@ module.exports = {
        return callback("Favorite not found");
      }
 
-// #4
      const authorized = new Authorizer(req.user, favorite).destroy();
 
      if(authorized){
@@ -52,4 +48,5 @@ module.exports = {
      callback(err);
    });
  }
+ 
 }
